@@ -7,6 +7,8 @@ import { UserDto } from './dto/user.dto'
 import { CurrentUser } from './decorators/current-user.decorator';
 import { User } from './entities/user.entity';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { Admin } from 'typeorm';
+import { AdminGuard } from 'src/guards/admin.guard';
 
 @Controller('user')
 @Serialize(UserDto)
@@ -22,8 +24,7 @@ export class UserController {
 
   @Post("/signup")
   async signup(@Body() body: CreateUserDto, @Session() session: any) {
-    const user = await this.userService.signup(body.email, body.password);
-    console.log(user)
+    const user = await this.userService.signup(body.email, body.password, body.username);
     session.userId = user.id;
     return user
   }
@@ -37,6 +38,7 @@ export class UserController {
 
 
   @Get()
+  @UseGuards(AdminGuard)
   findAll() {
     return this.userService.findAll();
   }

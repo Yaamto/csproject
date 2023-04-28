@@ -16,7 +16,7 @@ export class UserService {
     private repository: Repository<User>,
   ) {}
 
-  async signup(email: string, password: string) {
+  async signup(email: string, password: string, username: string) {
       // See if email is in use
       const user = await this.repository.findOneBy({email});
       if(user){
@@ -30,7 +30,7 @@ export class UserService {
       // Join the hashed password and the salt together
       const result = salt + '.' + hash.toString('hex');
       // Create a new user and save it to the database
-      const userResult = await this.create(email, result)
+      const userResult = await this.create(email, result, username)
       // Return the user
       return userResult
   }
@@ -47,13 +47,13 @@ export class UserService {
       }
       return user 
   }
-  async create(email: string, password: string){
-    const user = this.repository.create({email, password});
+  async create(email: string, password: string, username: string){
+    const user = this.repository.create({email, password, username});
     return this.repository.save(user);
   }
 
   findAll() {
-    return `This action returns all user`;
+    return this.repository.find();
   }
 
   findOne(id: string){
