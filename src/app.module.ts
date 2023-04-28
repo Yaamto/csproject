@@ -11,7 +11,7 @@ const  cookieSession = require('cookie-session');
 
 @Module({
   imports: [
-    MulterModule.register({ dest: './src/uploads' }),
+    MulterModule.register({ dest: '../uploads' }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`

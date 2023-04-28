@@ -11,11 +11,11 @@ import { Admin } from 'typeorm';
 import { AdminGuard } from 'src/guards/admin.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-import { extname } from 'path';
-import multer, { diskStorage } from 'multer';
+import { diskStorage } from 'multer';
+import { join } from 'path';
 
 const storage = diskStorage({
-  destination: './src/uploads',
+  destination: join(__dirname, '..', '..', 'uploads'),
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     cb(null, file.fieldname + '-' + uniqueSuffix + '.' + file.mimetype.split('/')[1]);
