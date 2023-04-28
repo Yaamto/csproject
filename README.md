@@ -45,6 +45,15 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## .Env
+
+Create a .env.development file and set all this values :
+
+DB_HOST=localhost
+DB_PORT=XXXX
+DB_USERNAME=postgres
+DB_PASSWORD=XXXX
+DB_NAME=XXXXX
 ## Test
 
 ```bash
