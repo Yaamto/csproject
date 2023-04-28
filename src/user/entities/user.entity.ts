@@ -14,7 +14,7 @@ export class User {
     @Column()
     username: string;
     
-    @Column({ default: true })
+    @Column({ default: false })
     admin: boolean;
     
     @Column({ nullable: true })

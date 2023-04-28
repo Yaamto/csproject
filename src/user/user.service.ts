@@ -18,9 +18,16 @@ export class UserService {
 
   async signup(email: string, password: string, username: string, file : Express.Multer.File) {
       // See if email is in use
-      const user = await this.repository.findOneBy({email});
-      if(user){
+      const existingUser = await this.repository.findOne({
+        where: [{ email }, { username }]
+      });
+      
+      if(existingUser && existingUser.email === email){
           throw new BadRequestException('Email in use');
+      }
+
+      if(existingUser && existingUser.username === username){
+        throw new BadRequestException('Username in use');
       }
       // Hash the users password
       // Generate a salt
