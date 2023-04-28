@@ -6,11 +6,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity'
 import { APP_PIPE } from '@nestjs/core';
-
+import { MulterModule } from '@nestjs/platform-express';
 const  cookieSession = require('cookie-session');
 
 @Module({
   imports: [
+    MulterModule.register({ dest: '../uploads' }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`

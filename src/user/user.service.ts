@@ -16,7 +16,7 @@ export class UserService {
     private repository: Repository<User>,
   ) {}
 
-  async signup(email: string, password: string, username: string) {
+  async signup(email: string, password: string, username: string, file : Express.Multer.File) {
       // See if email is in use
       const user = await this.repository.findOneBy({email});
       if(user){
@@ -30,7 +30,8 @@ export class UserService {
       // Join the hashed password and the salt together
       const result = salt + '.' + hash.toString('hex');
       // Create a new user and save it to the database
-      const userResult = await this.create(email, result, username)
+      const userResult = await this.create(email, result, username, file)
+      
       // Return the user
       return userResult
   }
@@ -47,8 +48,9 @@ export class UserService {
       }
       return user 
   }
-  async create(email: string, password: string, username: string){
-    const user = this.repository.create({email, password, username});
+  async create(email: string, password: string, username: string, file: Express.Multer.File){
+    const user = await this.repository.create({email, password, username});
+    user.profileImage = file.filename
     return this.repository.save(user);
   }
 
