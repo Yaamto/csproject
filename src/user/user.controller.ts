@@ -38,7 +38,6 @@ export class UserController {
   @Post('/signup', )
   @UseInterceptors(FileInterceptor('image', { storage }))
   async signup(@Body() body: CreateUserDto, @Session() session: any, @UploadedFile() file: Express.Multer.File,) {
-    return
     const user = await this.userService.signup(body.email, body.password, body.username, file);
     session.userId = user.id;
     return user
