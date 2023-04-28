@@ -7,6 +7,8 @@ import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity'
 import { APP_PIPE } from '@nestjs/core';
 import { MulterModule } from '@nestjs/platform-express';
+import { SpaceModule } from './space/space.module';
+import { Space } from './space/entities/space.entity';
 const  cookieSession = require('cookie-session');
 
 @Module({
@@ -25,11 +27,12 @@ const  cookieSession = require('cookie-session');
         username: config.get<string>('DB_USERNAME'),
         password: config.get<string>('DB_PASSWORD'),
         database: config.get<string>('DB_NAME'),
-        entities: [User],
+        entities: [User, Space],
         synchronize: true,
       })
     }),
     UserModule,
+    SpaceModule,
   ],
   controllers: [AppController],
   providers: [

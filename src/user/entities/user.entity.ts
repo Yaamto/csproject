@@ -1,4 +1,5 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Space } from "../../space/entities/space.entity";
+import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class User {
@@ -19,4 +20,10 @@ export class User {
     
     @Column({ nullable: true })
     profileImage: string;
+
+    @ManyToMany(() => Space, space => space.users)
+    spaces: Space[];
+  
+    @OneToMany(() => Space, space => space.creator)
+    createdSpaces: Space[];
 }
