@@ -10,4 +10,7 @@ export class UserDto {
 
     @Expose()
     username: string;
+
+    @Expose()
+    profileImage: string;
 }

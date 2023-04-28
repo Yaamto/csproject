@@ -16,5 +16,7 @@ export class User {
     
     @Column({ default: true })
     admin: boolean;
-
+    
+    @Column({ nullable: true })
+    profileImage: string;
 }
