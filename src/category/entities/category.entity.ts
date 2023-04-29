@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Utility } from "src/utility/entities/utility.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Category {
@@ -8,4 +9,7 @@ export class Category {
 
     @Column()
     name: string;
+
+    @OneToMany(() => Utility, utility => utility.category)
+    utilities: Utility[]
 }

@@ -1,5 +1,6 @@
+import { Utility } from "src/utility/entities/utility.entity";
 import { User } from "../../user/entities/user.entity";
-import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Space {
@@ -18,5 +19,8 @@ export class Space {
     @ManyToMany(() => User, user => user.spaces)
     @JoinTable()
     users: User[];
+
+    @OneToMany(() => Utility, utility => utility.space)
+    utilities: Utility[]
     
 }
