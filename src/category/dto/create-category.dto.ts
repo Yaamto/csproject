@@ -1,11 +1,9 @@
+
 import { IsString } from "class-validator";
 
-export class CreateSpaceDto {
+export class CreateCategoryDto {
 
     @IsString()
     name: string;
-
-    @IsString()
-    description: string;
 
 }
