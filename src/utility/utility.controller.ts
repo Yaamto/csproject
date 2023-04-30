@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFile, ParseUUIDPipe } from '@nestjs/common';
 import { UtilityService } from './utility.service';
 import { CreateUtilityDto } from './dto/create-utility.dto';
 import { UpdateUtilityDto } from './dto/update-utility.dto';
@@ -32,23 +32,27 @@ export class UtilityController {
     return this.utilityService.create(body, file, user);
   }
 
-  @Get()
-  findAll() {
-    return this.utilityService.findAll();
+  @Get('space/:id')
+  @UseGuards(AuthGuard)
+  findAll(@Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 })) id: string, @CurrentUser() user: User) {
+    return this.utilityService.findAll(id, user);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.utilityService.findOne(+id);
+  @UseGuards(AuthGuard)
+  findOne(@Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 })) id: string) {
+    return this.utilityService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUtilityDto: UpdateUtilityDto) {
-    return this.utilityService.update(+id, updateUtilityDto);
+  @UseGuards(AuthGuard)
+  @UseInterceptors(FileInterceptor('file', { storage }))
+  update(@Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 })) id: string, @Body() body: UpdateUtilityDto, @UploadedFile() file: Express.Multer.File, @CurrentUser() user: User) {
+    return this.utilityService.update(id, body, file, user);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.utilityService.remove(+id);
+  remove(@Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 })) id: string, @CurrentUser() user: User) {
+    return this.utilityService.remove(id, user);
   }
 }

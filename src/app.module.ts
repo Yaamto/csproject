@@ -54,7 +54,8 @@ const  cookieSession = require('cookie-session');
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(cookieSession({
-        keys: ['NB3BJ21H3BV23I8VHF9JEJF98YFEY7TF55V5']
+        keys: ['NB3BJ21H3BV23I8VHF9JEJF98YFEY7TF55V5'],
+        maxAge: 3 * 24 * 60 * 60 * 1000 // 3 days
       }))
       .forRoutes('*')
   }

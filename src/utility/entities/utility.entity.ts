@@ -1,6 +1,6 @@
 import { Category } from "src/category/entities/category.entity";
 import { Space } from "src/space/entities/space.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Utility {
@@ -21,5 +21,8 @@ export class Utility {
     
     @Column()
     path: string;
+
+    @CreateDateColumn()
+    createdAt: Date;
 
 }

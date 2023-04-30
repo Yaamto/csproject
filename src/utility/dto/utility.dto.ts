@@ -24,4 +24,7 @@ export class UtilityDto {
 
     @Expose()
     path: string;
+
+    @Expose()
+    createdAt: Date;
 }

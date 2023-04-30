@@ -1,5 +1,5 @@
 import { Utility } from "src/utility/entities/utility.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Category {
@@ -12,4 +12,8 @@ export class Category {
 
     @OneToMany(() => Utility, utility => utility.category)
     utilities: Utility[]
+    
+    @CreateDateColumn()
+    createdAt: Date;
+
 }
