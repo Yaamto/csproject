@@ -3,6 +3,7 @@ import { CategoryDto } from "src/category/dto/category.dto";
 import { Category } from "src/category/entities/category.entity";
 import { SpaceDto } from "src/space/dto/space.dto";
 import { Space } from "src/space/entities/space.entity";
+import { User } from "src/user/entities/user.entity";
 
 export class UtilityDto {
     @Expose()
@@ -27,4 +28,8 @@ export class UtilityDto {
 
     @Expose()
     createdAt: Date;
+
+    @Expose()
+    @Transform(({ obj }) => obj.users )
+    users: User[];
 }

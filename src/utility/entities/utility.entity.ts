@@ -1,6 +1,7 @@
 import { Category } from "src/category/entities/category.entity";
 import { Space } from "src/space/entities/space.entity";
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "src/user/entities/user.entity";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Utility {
@@ -22,7 +23,11 @@ export class Utility {
     @Column()
     path: string;
 
+    @ManyToMany(() => User, user => user.utilities)
+    users: User[];
+
     @CreateDateColumn()
     createdAt: Date;
+
 
 }

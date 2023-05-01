@@ -10,7 +10,8 @@ export class Category {
     @Column()
     name: string;
 
-    @OneToMany(() => Utility, utility => utility.category)
+    @OneToMany(() => Utility, utility => utility.category, {
+        cascade: true })
     utilities: Utility[]
     
     @CreateDateColumn()

@@ -34,50 +34,71 @@ export class UtilityService {
     return await this.utilityRepository.save(newUtility);
   }
 
-  async findAll(id: string, user: User) {
-    const utilities = await this.utilityRepository.find({where: {space: Equal(id)}, relations: ['category', 'space']})
-    const space = await this.spaceRepository.findOne({where: {id: id}, relations: ['users', 'creator']})
+  async createUserUtility(id: string, user: User) {
+    const utility = await this.isExist(id, 'Utility', this.utilityRepository, ['category', 'space', 'users', 'space.creator', 'space.users'])
 
-    
+    //Checking if user is in space
+    if (utility.space.users.find((u: User) => u.id !== user.id) && utility.space.creator.id !== user.id){
+      throw new BadRequestException('User not in space')
+    }
+    //Checking if user already has utility
+    if (utility.users.find((u: User) => u.id === user.id)){
+      throw new BadRequestException('User already has utility')
+    }
+
+    utility.users.push(user)
+    return await this.utilityRepository.save(utility)
+  }
+
+  async findAll(id: string, user: User) {
+    const utilities = await this.utilityRepository.find({where: {space: Equal(id)}, relations: ['category', 'space', 'users', 'space.users', 'space.creator']})
+    const space = await this.spaceRepository.findOne({where: {id: id}, relations: ['users', 'creator']})
+    //check if utilities exist
+    if(!utilities) {
+      throw new NotFoundException('No utilities found')
+    }
+    //check if user is in space
       if(space.users.find((u: User) => u.id !== user.id) && space.creator.id !== user.id){
         throw new BadRequestException('User not in space')
       }
     
-    if(!utilities) {
-      throw new NotFoundException('No utilities found')
-    }
-
     return utilities;
   }
 
-  findOne(id: string) {
-    const utility = this.utilityRepository.findOne( {relations: ['category', 'space'], where : {id}})
-    if(!utility) {
-      throw new NotFoundException('Utility not found')
+  async findOne(id: string, user: User) {
+    const utility = await this.isExist(id, 'Utility', this.utilityRepository, ['category', 'space', 'users', 'space.users', 'space.creator'])
+    //check if user is in space
+    console.log(utility.space.users, utility.space.creator)
+    if(utility.space.users.find((u: User) => u.id !== user.id) && utility.space.creator.id !== user.id){
+      throw new BadRequestException('User not in space')
     }
-    return `This action returns a #${id} utility`;
+    return utility;
   }
 
   async update(id: string, utility: UpdateUtilityDto, file: Express.Multer.File, user: User) {
     const { category, ...utilityData } = utility;
     // fetch all we need
     const categoryFetch = await this.isExist(category, 'Category', this.categoryRepository)
-    const utilityFetch = await this.isExist(id, 'Utility', this.utilityRepository, ['category', 'space'])
+    const utilityFetch = await this.isExist(id, 'Utility', this.utilityRepository, ['space', 'category'])
     const spaceFetch = await this.isExist(utilityFetch.space.id, 'Space', this.spaceRepository, ['creator', 'users'])
-
     //Checking if user is in space
     if(spaceFetch.users.find((u: User) => u.id !== user.id) && spaceFetch.creator.id !== user.id){
       throw new BadRequestException('User not in space')
     }
-    
-    utilityFetch.category = categoryFetch
+    //replace utility.category with categoryFetch
+    Object.assign(utilityFetch, utilityData)
+      if(categoryFetch){
+        Object.assign(utilityFetch.category, categoryFetch)
+      }
     //checking if file is uploaded
     if(file){
       utilityFetch.path = file.filename
     }
-    Object.assign(utilityFetch, utilityData)
-    return await this.utilityRepository.save(utilityFetch);
-
+    const test = await this.utilityRepository.save(utilityFetch)
+    if(!test){
+      throw new BadRequestException('Error while updating')
+    }
+    return test;
   }
 
   async remove(id: string, user: User) {
@@ -106,6 +127,9 @@ export class UtilityService {
 
 
   async isExist(id: string, entity: string, repository: Repository<any>, relations?: string[]) {
+    if(!id) {
+     return null
+    }
     const element = await repository.findOne({ relations: relations, where : {id: id}})
     if(!element) {
       throw new NotFoundException(`${entity} not found`)

@@ -32,16 +32,23 @@ export class UtilityController {
     return this.utilityService.create(body, file, user);
   }
 
+  @Post('user/:id')
+  @UseGuards(AuthGuard)
+  createUserUtility(@Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 })) id: string, @CurrentUser() user: User) {
+    return this.utilityService.createUserUtility(id, user);
+  }
+
   @Get('space/:id')
   @UseGuards(AuthGuard)
   findAll(@Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 })) id: string, @CurrentUser() user: User) {
     return this.utilityService.findAll(id, user);
   }
+  
 
   @Get(':id')
   @UseGuards(AuthGuard)
-  findOne(@Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 })) id: string) {
-    return this.utilityService.findOne(id);
+  findOne(@Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 })) id: string, @CurrentUser() user: User) {
+    return this.utilityService.findOne(id, user);
   }
 
   @Patch(':id')
