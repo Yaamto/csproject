@@ -9,6 +9,7 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Space } from 'src/space/entities/space.entity';
 import { User } from 'src/user/entities/user.entity';
 import * as fs from 'fs'
+import { Map } from 'src/map/entities/map.entity';
 
 @Injectable()
 export class UtilityService {
@@ -16,12 +17,14 @@ export class UtilityService {
    @InjectRepository(Utility) private utilityRepository: Repository<Utility>,
    @InjectRepository(Category) private categoryRepository: Repository<Category>,
    @InjectRepository(Space) private spaceRepository: Repository<Space>,
+   @InjectRepository(Map) private mapRepository: Repository<Map>
    ){}
 
   async create(utility: CreateUtilityDto, file: Express.Multer.File, user: User) {
-    const { category, space, ...utilityData } = utility;
+    const { category, space, map, ...utilityData } = utility;
 
     const categoryFetch = await this.isExist(category, 'Category', this.categoryRepository)
+    const mapFetch = await this.isExist(map, 'Map', this.mapRepository)
     const spaceFetch = await this.isExist(space, 'Space', this.spaceRepository, ['creator', 'users'])
     //Checking if user is in space
     if (spaceFetch.users.find((u: User) => u.id !== user.id) && spaceFetch.creator.id !== user.id){
@@ -30,6 +33,7 @@ export class UtilityService {
     const newUtility = this.utilityRepository.create(utilityData)
     newUtility.category = categoryFetch
     newUtility.space = spaceFetch
+    newUtility.map = mapFetch
     newUtility.path = file.filename
     return await this.utilityRepository.save(newUtility);
   }
@@ -51,7 +55,7 @@ export class UtilityService {
   }
 
   async findAll(id: string, user: User) {
-    const utilities = await this.utilityRepository.find({where: {space: Equal(id)}, relations: ['category', 'space', 'users', 'space.users', 'space.creator']})
+    const utilities = await this.utilityRepository.find({where: {space: Equal(id)}, relations: ['category', 'space', 'users', 'space.users', 'space.creator', "map"]})
     const space = await this.spaceRepository.findOne({where: {id: id}, relations: ['users', 'creator']})
     //check if utilities exist
     if(!utilities) {
@@ -66,7 +70,7 @@ export class UtilityService {
   }
 
   async findOne(id: string, user: User) {
-    const utility = await this.isExist(id, 'Utility', this.utilityRepository, ['category', 'space', 'users', 'space.users', 'space.creator'])
+    const utility = await this.isExist(id, 'Utility', this.utilityRepository, ['category', 'space', 'users', 'space.users', 'space.creator', 'map'])
     //check if user is in space
     console.log(utility.space.users, utility.space.creator)
     if(utility.space.users.find((u: User) => u.id !== user.id) && utility.space.creator.id !== user.id){
