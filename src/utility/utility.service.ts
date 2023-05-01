@@ -78,14 +78,14 @@ export class UtilityService {
   async update(id: string, utility: UpdateUtilityDto, file: Express.Multer.File, user: User) {
     const { category, ...utilityData } = utility;
     // fetch all we need
-    const categoryFetch = await this.isExist(category, 'Category', this.categoryRepository)
     const utilityFetch = await this.isExist(id, 'Utility', this.utilityRepository, ['space', 'category'])
+    const categoryFetch = await this.isExist(category, 'Category', this.categoryRepository)
     const spaceFetch = await this.isExist(utilityFetch.space.id, 'Space', this.spaceRepository, ['creator', 'users'])
     //Checking if user is in space
     if(spaceFetch.users.find((u: User) => u.id !== user.id) && spaceFetch.creator.id !== user.id){
       throw new BadRequestException('User not in space')
     }
-    //replace utility.category with categoryFetch
+    //replace utility with new data
     Object.assign(utilityFetch, utilityData)
       if(categoryFetch){
         Object.assign(utilityFetch.category, categoryFetch)
