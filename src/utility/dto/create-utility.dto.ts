@@ -13,4 +13,7 @@ export class CreateUtilityDto {
 
     @IsUUID("4")
     space: string;
+
+    @IsUUID("4")
+    map: string;
 }
