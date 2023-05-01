@@ -13,6 +13,8 @@ import { CategoryModule } from './category/category.module';
 import { Category } from './category/entities/category.entity';
 import { UtilityModule } from './utility/utility.module';
 import { Utility } from './utility/entities/utility.entity';
+import { MapModule } from './map/map.module';
+import { Map } from './map/entities/map.entity';
 const  cookieSession = require('cookie-session');
 
 @Module({
@@ -31,7 +33,7 @@ const  cookieSession = require('cookie-session');
         username: config.get<string>('DB_USERNAME'),
         password: config.get<string>('DB_PASSWORD'),
         database: config.get<string>('DB_NAME'),
-        entities: [User, Space, Category, Utility],
+        entities: [User, Space, Category, Utility, Map],
         synchronize: true,
       })
     }),
@@ -39,6 +41,7 @@ const  cookieSession = require('cookie-session');
     SpaceModule,
     CategoryModule,
     UtilityModule,
+    MapModule,
   ],
   controllers: [AppController],
   providers: [
