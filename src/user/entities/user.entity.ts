@@ -1,3 +1,4 @@
+import { Utility } from "src/utility/entities/utility.entity";
 import { Space } from "../../space/entities/space.entity";
 import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -26,4 +27,9 @@ export class User {
   
     @OneToMany(() => Space, space => space.creator)
     createdSpaces: Space[];
+
+    @ManyToMany(() => Utility, utility => utility.users)
+    @JoinTable()
+    utilities: Utility[];
+
 }
