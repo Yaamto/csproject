@@ -7,6 +7,14 @@ import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity'
 import { APP_PIPE } from '@nestjs/core';
 import { MulterModule } from '@nestjs/platform-express';
+import { SpaceModule } from './space/space.module';
+import { Space } from './space/entities/space.entity';
+import { CategoryModule } from './category/category.module';
+import { Category } from './category/entities/category.entity';
+import { UtilityModule } from './utility/utility.module';
+import { Utility } from './utility/entities/utility.entity';
+import { MapModule } from './map/map.module';
+import { Map } from './map/entities/map.entity';
 const  cookieSession = require('cookie-session');
 
 @Module({
@@ -25,11 +33,15 @@ const  cookieSession = require('cookie-session');
         username: config.get<string>('DB_USERNAME'),
         password: config.get<string>('DB_PASSWORD'),
         database: config.get<string>('DB_NAME'),
-        entities: [User],
+        entities: [User, Space, Category, Utility, Map],
         synchronize: true,
       })
     }),
     UserModule,
+    SpaceModule,
+    CategoryModule,
+    UtilityModule,
+    MapModule,
   ],
   controllers: [AppController],
   providers: [
@@ -45,7 +57,8 @@ const  cookieSession = require('cookie-session');
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(cookieSession({
-        keys: ['NB3BJ21H3BV23I8VHF9JEJF98YFEY7TF55V5']
+        keys: ['NB3BJ21H3BV23I8VHF9JEJF98YFEY7TF55V5'],
+        maxAge: 3 * 24 * 60 * 60 * 1000 // 3 days
       }))
       .forRoutes('*')
   }

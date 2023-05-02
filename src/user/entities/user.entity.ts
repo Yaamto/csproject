@@ -1,4 +1,6 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Utility } from "src/utility/entities/utility.entity";
+import { Space } from "../../space/entities/space.entity";
+import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class User {
@@ -14,9 +16,20 @@ export class User {
     @Column()
     username: string;
     
-    @Column({ default: true })
+    @Column({ default: false })
     admin: boolean;
     
     @Column({ nullable: true })
     profileImage: string;
+
+    @ManyToMany(() => Space, space => space.users)
+    spaces: Space[];
+  
+    @OneToMany(() => Space, space => space.creator)
+    createdSpaces: Space[];
+
+    @ManyToMany(() => Utility, utility => utility.users)
+    @JoinTable()
+    utilities: Utility[];
+
 }
