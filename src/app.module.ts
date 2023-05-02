@@ -15,6 +15,8 @@ import { UtilityModule } from './utility/utility.module';
 import { Utility } from './utility/entities/utility.entity';
 import { MapModule } from './map/map.module';
 import { Map } from './map/entities/map.entity';
+import { PaymentModule } from './payment/payment.module';
+import { StripeModule } from 'nestjs-stripe';
 const  cookieSession = require('cookie-session');
 
 @Module({
@@ -23,6 +25,10 @@ const  cookieSession = require('cookie-session');
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`
+    }),
+    StripeModule.forRoot({
+      apiKey: `${process.env.STRIPE_SECRET}`,
+      apiVersion: '2022-11-15',
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -42,6 +48,7 @@ const  cookieSession = require('cookie-session');
     CategoryModule,
     UtilityModule,
     MapModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [
