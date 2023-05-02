@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Session, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Session, UseGuards, UseInterceptors, UploadedFile, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -13,6 +13,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 
 import { diskStorage } from 'multer';
 import { join } from 'path';
+import {  Request, Response } from 'express';
 
 const storage = diskStorage({
   destination: join(__dirname, '..', '..', 'uploads'),
@@ -62,12 +63,21 @@ export class UserController {
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard || AdminGuard)
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard || AdminGuard)
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
+  }
+
+  @Post('/logout')
+  logout(@Session() session: any, @Req() req: Request) {
+    session.userId = null;
+    req.session = null
+    return "test"
   }
 }
