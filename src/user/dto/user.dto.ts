@@ -13,4 +13,7 @@ export class UserDto {
 
     @Expose()
     profileImage: string;
+
+    @Expose()
+    admin: boolean;
 }
