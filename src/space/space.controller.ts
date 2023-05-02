@@ -8,6 +8,7 @@ import { AuthGuard } from 'src/guards/auth.guard';
 import { CurrentUser } from 'src/user/decorators/current-user.decorator';
 import { User } from 'src/user/entities/user.entity';
 import { UpdateSpaceUserDto } from './dto/update-space-user.dto';
+import { AdminGuard } from 'src/guards/admin.guard';
 
 @Controller('space')
 @Serialize(SpaceDto)
@@ -26,11 +27,13 @@ export class SpaceController {
     return this.spaceService.join(id, user);
   }
   @Get()
+  @UseGuards(AdminGuard)
   findAll() {
     return this.spaceService.findAll();
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard || AdminGuard)
   findOne(@Param('id') id: string) {
     return this.spaceService.findOne(id);
   }
