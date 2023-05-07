@@ -37,6 +37,12 @@ export class SpaceController {
   findOne(@Param('id') id: string) {
     return this.spaceService.findOne(id);
   }
+  
+  @Get('/user/spaces')
+  @UseGuards(AuthGuard)
+  findUserSpaces(@CurrentUser() user: User) {
+    return this.spaceService.findUserSpaces(user);
+  }
 
   @Patch(':id')
   @UseGuards(AuthGuard)

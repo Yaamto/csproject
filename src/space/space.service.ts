@@ -42,6 +42,28 @@ export class SpaceService {
     return this.repository.findOne({relations: ['users', 'creator'], where : { id: id }});
   }
 
+  async findUserSpaces(user: User){
+    //Select only the id of space where user is in
+    const spacesId = await this.repository.createQueryBuilder('space')
+    .leftJoinAndSelect('space.users', 'users')
+    .where('users.id = :id', {id: user.id})
+    .orWhere('space.creatorId = :id', {id: user.id})
+    .select('space.id')
+    .getMany()
+
+   const ids = spacesId.map(space => ({id: space.id}))
+    //Request all spaces with the ids of the previous query
+    const spaces = await this.repository.find({relations: ['users', 'creator'], where: ids})
+   
+    
+    
+
+    // const spacesId = await this.repository.find({ where : [{users: user}, { creator: user }]})
+    // const spaces = await this.repository.find({relations: ['users', 'creator'], where})
+    // console.log(spacesId)
+
+    return spaces
+  }
   
   async update(id: string, attrs: Partial<Space>, user: User) {
       const space = await this.repository.findOne({relations: ['creator'], where : { id: id }})
